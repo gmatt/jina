@@ -84,12 +84,13 @@ def archive_package(package_folder: 'Path') -> 'io.BytesIO':
 
     def _zip(base_path, path, archive):
         for p in path.iterdir():
-            if ignored_spec.match_file(p):
+            rel_path = p.relative_to(base_path)
+            if ignored_spec.match_file(rel_path):
                 continue
             if p.is_dir():
                 _zip(base_path, p, archive)
             else:
-                archive.write(p, p.relative_to(base_path))
+                archive.write(p, rel_path)
 
     _zip(root_path, root_path, zfile)
 
